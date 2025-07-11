@@ -332,15 +332,14 @@
             background-color: var(--background-light);
             z-index: 1100;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: flex-start; /* MOBİL DÜZELTME */
+            align-items: flex-start; /* MOBİL DÜZELTME */
             opacity: 0;
             pointer-events: none;
             transform: scale(0.95);
             transition: opacity 0.4s ease, transform 0.4s ease;
-            /* MOBİL DÜZELTME: Kaydırma eklendi */
             overflow-y: auto;
-            padding: 4rem 1rem;
+            padding: 2rem 1rem;
         }
         .contact-modal.active {
             opacity: 1;
@@ -349,8 +348,8 @@
         }
         .modal-close-btn {
             position: absolute;
-            top: 2rem;
-            right: 2rem;
+            top: 1.5rem;
+            right: 1.5rem;
             background: none;
             border: none;
             cursor: pointer;
@@ -371,14 +370,14 @@
             gap: 3rem;
             width: 100%;
             max-width: 1200px;
-            /* MOBİL DÜZELTME: Yükseklik kaldırıldı */
+            margin: auto; /* MOBİL DÜZELTME */
         }
         .modal-map, .modal-form {
             width: 100%;
             height: 100%;
             border-radius: 1rem;
             overflow: hidden;
-            min-height: 500px; /* Harita ve formun çok küçülmesini engeller */
+            min-height: 500px;
         }
         .modal-map iframe {
             width: 100%;
@@ -442,12 +441,12 @@
             }
             .collection-panel .image-content {
                 width: 100%;
-                height: 60vh; /* Resim için sabit bir yükseklik */
+                height: 60vh;
                 order: 1;
             }
             .collection-panel .text-content {
                 width: 100%;
-                height: 40vh; /* Kalan alanı doldurur */
+                height: 40vh;
                 order: 2;
                 display: flex;
                 flex-direction: column;
@@ -457,7 +456,14 @@
             }
             .collection-panel .description { margin-left: auto; margin-right: auto; }
             
-            .gallery-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+            /* MOBİL DÜZELTME: Galeri bölümü */
+            #gallery {
+                padding: 80px 1.5rem;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
             
             /* MOBİL DÜZELTME: İletişim Modalı */
             .modal-content-grid {
@@ -465,7 +471,7 @@
                 gap: 1.5rem;
             }
             .modal-map {
-                height: 300px; /* Harita için sabit yükseklik */
+                height: 300px;
                 min-height: auto;
             }
             .modal-form {
@@ -719,4 +725,4 @@
         });
     </script>
 </body>
-</html>
+</ht
