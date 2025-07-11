@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doğal Mermer - Doğal Mermer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /*ANİMASYONLAR*/
+        :root {
+            --background-dark: #000000;
+            --background-light: #f5f5f7;
+            --text-light: #ffffff;
+            --text-dark: #1d1d1f;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --animation-duration: 1.2s;
+            --button-blue: #007aff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            transition: background-color 0.8s ease;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /*HEADER*/
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(-100%);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /*KAYDIRMA ŞEYSİ*/
+        .scroll-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /*BÖLÜMLER*/
+        .scene {
+            height: 100vh;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /*İLK BÖLÜM*/
+        #hero { z-index: 1; }
+
+        .hero-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center; opacity: 0;
+            transition: opacity 1.5s ease-in-out; transform: scale(1.1);
+        }
+
+        .hero-background.active {
+            opacity: 1; transform: scale(1);
+            transition: opacity 1.5s ease-in-out, transform 10s linear;
+        }
+        
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+        }
+
+        .hero-content { z-index: 2; position: relative; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: center;}
+
+        .hero-content h1 {
+            font-size: clamp(3rem, 10vw, 7rem); font-weight: 700;
+            letter-spacing: -0.02em; color: var(--text-light);
+            opacity: 0; transform: translateY(40px); animation: fadeIn 1s 0.5s forwards;
+        }
+
+        .hero-content .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 400;
+            margin-top: 1rem; color: var(--text-secondary); max-width: 600px;
+            opacity: 0; transform: translateY(40px); animation: fadeIn 1s 0.8s forwards;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+        /*KAYDIRAN OK*/
+        .scroll-down-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            animation: bounce 2.5s infinite ease-in-out;
+            cursor: pointer;
+            opacity: 0;
+            animation-delay: 1.5s; /*Yazılar belirdikten sonra başlasın*/
+            animation-fill-mode: forwards;
+        }
+
+        .scroll-down-indicator svg {
+            width: 32px;
+            height: 32px;
+            stroke: rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes bounce {
+            0% { transform: translate(-50%, 0); opacity: 0; }
+            50% { opacity: 1; }
+            70% { transform: translate(-50%, -15px); }
+            80% { transform: translate(-50%, 5px); }
+            90% { transform: translate(-50%, -5px); }
+            100% { transform: translate(-50%, 0); opacity: 1; }
+        }
+        
+        /*ÖZELLİK BÖLÜMLERİ*/
+        #features { 
+            z-index: 2; 
+            position: relative; 
+            width: 100%; 
+            height: 300vh; 
+            background-color: var(--background-dark);
+        }
+        .feature-sticky-wrapper { height: 100vh; width: 100%; position: sticky; top: 0; overflow: hidden; }
+        .feature-panel {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            text-align: center; flex-direction: column;
+            opacity: 0; transition: opacity 0.8s ease-in-out;
+            background-color: var(--background-dark);
+        }
+        .feature-panel.active { opacity: 1; }
+        .feature-content { max-width: 800px; padding: 2rem; }
+        .feature-content h1, .feature-content h2,
+        .feature-content p {
+            opacity: 0;
+            transition: opacity var(--animation-duration) ease-in-out;
+        }
+        .feature-panel.active .feature-content h1,
+        .feature-panel.active .feature-content h2,
+        .feature-panel.active .feature-content p {
+            opacity: 1;
+        }
+        .feature-panel.active .feature-content p {
+            transition-delay: 0.3s;
+        }
+
+        /*RESİMLER*/
+        #collection { 
+            z-index: 3; 
+            position: relative; 
+            width: 100%; 
+            height: 600vh; 
+            background-color: var(--background-dark);
+        }
+        .collection-sticky-wrapper { height: 100vh; width: 100%; position: sticky; top: 0; overflow: hidden; }
+        .collection-panel {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease-in-out;
+        }
+        .collection-panel .text-content { width: 40%; padding: 0 5%; z-index: 2; }
+        .collection-panel .image-content { width: 60%; height: 100%; position: relative; overflow: hidden; }
+        .collection-panel .image-content img {
+            position: absolute; width: 100%; height: 100%; object-fit: cover;
+            transform: scale(1.15); transition: transform 1s ease-out;
+        }
+        .collection-panel h3, .collection-panel .description {
+            opacity: 0;
+            transition: opacity 0.7s ease-out;
+        }
+        .collection-panel.active h3, .collection-panel.active .description {
+            opacity: 1;
+        }
+        .collection-panel.active .description {
+            transition-delay: 0.2s;
+        }
+        .collection-panel h3 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 600; margin-bottom: 1rem; }
+        .collection-panel .description { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-secondary); max-width: 450px; line-height: 1.6; }
+        .collection-panel.active { opacity: 1; }
+        .collection-panel.active .image-content img { transform: scale(1); }
+        .panel-1 .text-content { order: 1; text-align: left; } .panel-1 .image-content { order: 2; }
+        .panel-2 { background-color: #111; } .panel-2 .text-content { order: 2; text-align: right; } .panel-2 .image-content { order: 1; }
+        .panel-3 .text-content { order: 1; text-align: left; } .panel-3 .image-content { order: 2; }
+        .panel-4 { background-color: #181818; } .panel-4 .text-content { order: 2; text-align: right; } .panel-4 .image-content { order: 1; }
+        .panel-5 { background-color: #0a0a0a; } .panel-5 .text-content { order: 1; text-align: left; } .panel-5 .image-content { order: 2; }
+        .panel-6 { background-color: #1a1a1a; } .panel-6 .text-content { order: 2; text-align: right; } .panel-6 .image-content { order: 1; }
+
+        /*ÖBÜR RESİMLER*/
+        #gallery {
+            position: relative; z-index: 4; background-color: var(--background-dark);
+            padding: 120px 2rem; min-height: auto;
+        }
+        .gallery-content {
+            max-width: 1200px; margin: 0 auto; text-align: center;
+            opacity: 0; transition: opacity var(--animation-duration) ease-out;
+        }
+        #gallery.is-visible .gallery-content { opacity: 1; }
+        .gallery-content h2 { font-size: clamp(2.5rem, 7vw, 4rem); font-weight: 600; margin-bottom: 3rem; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .gallery-item { position: relative; overflow: hidden; border-radius: 1rem; aspect-ratio: 3/4; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .gallery-item:hover img { transform: scale(1.05); }
+        .gallery-item-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 1.5rem 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            color: var(--text-light); font-weight: 500; font-size: 1.2rem;
+            transform: translateY(100%); transition: transform 0.4s ease; text-align: left;
+        }
+        .gallery-item:hover .gallery-item-overlay { transform: translateY(0); }
+
+        /*İLETİŞİM*/
+        #contact { z-index: 5; background-color: var(--background-light); color: var(--text-dark); }
+        .contact-content {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        #contact.modal-is-open .contact-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .contact-content h2 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 600; margin-bottom: 1.5rem; }
+        .contact-content p { font-size: clamp(1.2rem, 3vw, 1.7rem); margin-bottom: 3rem; color: #555; }
+        .contact-button {
+            font-size: 1.2rem; font-weight: 500; color: var(--text-light);
+            background-color: var(--button-blue); padding: 1rem 2.5rem; border-radius: 999px;
+            text-decoration: none; transition: background-color 0.3s;
+            border: none; cursor: pointer;
+        }
+        .contact-button:hover { background-color: #0056b3; }
+
+        /*ANLAŞMALI ŞİRKETLER*/
+        .partners-section {
+            margin-top: 4rem;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 1rem;
+        }
+        .partners-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+        }
+        .partners-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+        .partners-logos img {
+            height: 40px;
+            width: auto;
+            max-width: 150px;
+            opacity: 0.6;
+            filter: brightness(0) invert(0.6);
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+        .partners-logos img:hover {
+            opacity: 1;
+            filter: brightness(0) invert(0.1);
+        }
+
+        /*FORM VE HARİTA*/
+        .contact-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-light);
+            z-index: 1100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .contact-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .modal-close-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-dark);
+            transition: transform 0.3s ease;
+        }
+        .modal-close-btn:hover svg {
+            transform: rotate(90deg);
+        }
+        .modal-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            width: 90%;
+            max-width: 1200px;
+            height: 80%;
+            max-height: 700px;
+        }
+        .modal-map, .modal-form {
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .modal-map iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .modal-form {
+            background-color: #fff;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        .modal-form h3 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--button-blue);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-submit-btn {
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        /*ANİMASYONLU AYARLI ŞEY*/
+        @media (max-width: 768px) {
+            header { padding: 1rem 1.5rem; }
+            .logo { font-size: 1.2rem; }
+            .nav-link { display: none; }
+            .collection-panel { flex-direction: column; }
+            .collection-panel .text-content, .collection-panel .image-content {
+                width: 100%; height: 50%; text-align: center !important; order: 0 !important;
+            }
+            .collection-panel .text-content {
+                display: flex; flex-direction: column; justify-content: center; padding: 2rem;
+            }
+            .collection-panel .description { margin-left: auto; margin-right: auto; }
+            .gallery-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+            .modal-content-grid {
+                grid-template-columns: 1fr;
+                height: 90%;
+                gap: 1.5rem;
+            }
+            .modal-form {
+                padding: 1.5rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <a href="#" class="logo">Doğal Mermer</a>
+        <a href="#contact" class="nav-link">İletişim</a>
+    </header>
+
+    <div class="scroll-container">
+        
+        <section id="hero" class="scene">
+            <div class="hero-background-container"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div>
+                    <h1>Doğal Mermer</h1>
+                    <p class="subtitle"></p>
+                </div>
+                <!-- YENİ: AŞAĞI OK İKONU -->
+                <div class="scroll-down-indicator">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor"><path d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"></path></svg>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="feature-sticky-wrapper">
+                <div class="feature-panel">
+                    <div class="feature-content">
+                        <h1>Uzun Ömürlü Mermerler.</h1>
+                        <p>Özenle Yaptığımız İşçilik Ve Kaliteli Mermerler İle Uzun Yıllar Boyunca İlk Günkü Gibi Kalır</p>
+                    </div>
+                </div>
+                <div class="feature-panel">
+                    <div class="feature-content">
+                        <h2>Size Özel Tasarımlar.</h2>
+                        <p>Hayalinizdeki Konsepti, Mermerler İle İşliyoruz.</p>
+                    </div>
+                </div>
+                <div class="feature-panel">
+                    <div class="feature-content">
+                        <h2>Profesyonel Montaj.</h2>
+                        <p>Usta ellerde, kusursuz bir işçilikle mermerinizi mekanınıza taşıyoruz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="collection">
+            <div class="collection-sticky-wrapper">
+                <div class="collection-panel panel-1" data-color="#0d0d0d"><div class="text-content"><h3>Bahçe Serisi</h3><p class="description">Bahçeniz İçin Şık Ve Kaliteli Mermerler.</p></div><div class="image-content"><img src="https://i.pinimg.com/1200x/4a/3d/bc/4a3dbca47cf360c574927546f1152aae.jpg" alt="Calacatta Vagli Mermer" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/cccccc/ffffff?text=Resim+1';"></div></div>
+                <div class="collection-panel panel-2" data-color="#1a1a1a"><div class="text-content"><h3>Mobilya Serisi</h3><p class="description">Sağlam Ve Kaliteli Mermer Masalar.</p></div><div class="image-content"><img src="https://i.pinimg.com/736x/88/6b/60/886b601410c33c376d45505ab3c512d0.jpg" alt="Nero Marquina Mermer" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/cccccc/ffffff?text=Resim+2';"></div></div>
+                <div class="collection-panel panel-3" data-color="#101214"><div class="text-content"><h3>Yer Döşeme Serisi</h3><p class="description">Kaliteli Zemin Mermerleri.</p></div><div class="image-content"><img src="https://i.pinimg.com/736x/1d/05/a8/1d05a8548ed662a009b03e3d9cf01f52.jpg" alt="Elegant Gray Mermer" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/cccccc/ffffff?text=Resim+3';"></div></div>
+                <div class="collection-panel panel-4" data-color="#181818"><div class="text-content"><h3>Duvar Döşeme Serisi</h3><p class="description">Mermer Duvarlar.</p></div><div class="image-content"><img src="https://i.pinimg.com/1200x/c5/db/77/c5db775d562e76d8a7cb0012eefc0c75.jpg" alt="Sahara Noir Mermer" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/cccccc/ffffff?text=Resim+4';"></div></div>
+                <div class="collection-panel panel-5" data-color="#0a0a0a"><div class="text-content"><h3>Mutfak Serisi</h3><p class="description">Kaliteli Mermer Mutfak Tezgahları.</p></div><div class="image-content"><img src="https://i.pinimg.com/1200x/53/17/13/5317132229c2bca979314b46bd887fcc.jpg" alt="Mermer Mutfak Tezgahı" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/cccccc/ffffff?text=Resim+5';"></div></div>
+                <div class="collection-panel panel-6" data-color="#1a1a1a"><div class="text-content"><h3>Banyo Serisi</h3><p class="description">Banyonuz İçin En İyi Mermerler.</p></div><div class="image-content"><img src="https://i.pinimg.com/736x/1d/d6/b8/1dd6b8fbf68694ac1b62cc5c3754c5a1.jpg" alt="Lüks Mermer Banyo" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/cccccc/ffffff?text=Resim+6';"></div></div>
+            </div>
+        </section>
+
+        <section id="gallery">
+            <div class="gallery-content">
+                <h2>Bazı Çalışmalarımız</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item"><img src="https://i.pinimg.com/1200x/53/17/13/5317132229c2bca979314b46bd887fcc.jpg" alt="Mermer Mutfak" onerror="this.onerror=null;this.src='https://placehold.co/600x800/2d3748/ffffff?text=Mutfak';"><div class="gallery-item-overlay"><span>Mutfaklar</span></div></div>
+                    <div class="gallery-item"><img src="https://i.pinimg.com/736x/1d/d6/b8/1dd6b8fbf68694ac1b62cc5c3754c5a1.jpg" alt="Mermer Banyo" onerror="this.onerror=null;this.src='https://placehold.co/600x800/4a5568/ffffff?text=Banyo';"><div class="gallery-item-overlay"><span>Banyolar</span></div></div>
+                    <div class="gallery-item"><img src="https://i.pinimg.com/736x/7f/24/eb/7f24eb97f1a768667522a357a2237307.jpg" alt="Mermer Zemin" onerror="this.onerror=null;this.src='https://placehold.co/600x800/718096/ffffff?text=Zemin';"><div class="gallery-item-overlay"><span>Zemin & Duvar</span></div></div>
+                    <div class="gallery-item"><img src="https://i.pinimg.com/736x/dd/47/d3/dd47d3419f4745ffb9add54f9e741552.jpg" alt="Mermer Detay" onerror="this.onerror=null;this.src='https://placehold.co/600x800/2d3748/ffffff?text=Detay';"><div class="gallery-item-overlay"><span>Detaylar</span></div></div>
+                    <div class="gallery-item"><img src="https://i.pinimg.com/736x/1d/05/a8/1d05a8548ed662a009b03e3d9cf01f52.jpg" alt="Mermer Lobi" onerror="this.onerror=null;this.src='https://placehold.co/600x800/4a5568/ffffff?text=Lobi';"><div class="gallery-item-overlay"><span>Lobiler</span></div></div>
+                    <div class="gallery-item"><img src="https://i.pinimg.com/736x/3a/13/20/3a13201f9ea51b14874b556ae54ad8f2.jpg" alt="Mermer Otel" onerror="this.onerror=null;this.src='https://placehold.co/600x800/718096/ffffff?text=Otel';"><div class="gallery-item-overlay"><span>Ticari Alanlar</span></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="scene">
+            <div class="contact-content">
+                <h2>Projenizi Hayata Geçirelim.</h2>
+                <p>Hayalinizdeki mekanı tasarlamak için buradayız.</p>
+                <button class="contact-button" id="open-modal-btn">Bize Ulaşın</button>
+                
+                <div class="partners-section">
+                    <h4 class="partners-title">İş Ortaklarımız</h4>
+                    <div class="partners-logos">
+                        <img src="https://i.imgur.com/tGtbi4B.png" alt="İş Ortağı 1 Logosu">
+                        <img src="https://i.imgur.com/2RNdpzz.png" alt="İş Ortağı 2 Logosu">
+                        <img src="https://i.imgur.com/mU8DFms.png" alt="İş Ortağı 3 Logosu">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="contact-modal" id="contact-modal">
+                <button class="modal-close-btn" id="close-modal-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <div class="modal-content-grid">
+                    <div class="modal-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3049.9625871255485!2d26.474262399999997!3d40.1431171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14b1074c21560955%3A0x60c6c5453b49f94f!2sDO%C4%9EAL%20MERMER!5e0!3m2!1sen!2str!4v1752229246204!5m2!1sen!2str" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <form class="modal-form">
+                        <h3>Bize Yazın</h3>
+                        <div class="form-group">
+                            <label for="name">Adınız Soyadınız</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-posta Adresiniz</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mesajınız</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        <button type="submit" class="contact-button form-submit-btn">Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('main-header');
+            const heroSection = document.getElementById('hero');
+
+            // HERO RESİM ŞEYSİ
+            const images = ['https://i.pinimg.com/736x/1d/d6/b8/1dd6b8fbf68694ac1b62cc5c3754c5a1.jpg', 'https://i.pinimg.com/1200x/53/17/13/5317132229c2bca979314b46bd887fcc.jpg', 'https://i.pinimg.com/736x/7f/24/eb/7f24eb97f1a768667522a357a2237307.jpg', 'https://i.pinimg.com/736x/dd/47/d3/dd47d3419f4745ffb9add54f9e741552.jpg'];
+            const heroBgContainer = document.querySelector('.hero-background-container');
+            let currentImageIndex = 0;
+            images.forEach((src, index) => {
+                const div = document.createElement('div');
+                div.className = 'hero-background';
+                div.style.backgroundImage = `url(${src})`;
+                if (index === 0) div.classList.add('active');
+                heroBgContainer.appendChild(div);
+            });
+            const bgDivs = heroBgContainer.querySelectorAll('.hero-background');
+            setInterval(() => {
+                bgDivs[currentImageIndex].classList.remove('active');
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                bgDivs[currentImageIndex].classList.add('active');
+            }, 6000);
+
+            // KAYDIRINCA ÇIKAN ANİMASYON
+            const animatedSections = document.querySelectorAll('#gallery, #contact');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.5 });
+            animatedSections.forEach(section => { observer.observe(section); });
+            
+            // HEADER IN GÖRÜNMESİ
+            const headerObserver = new IntersectionObserver((entries) => {
+                 entries.forEach(entry => {
+                    if(!entry.isIntersecting) header.classList.add('visible');
+                    else header.classList.remove('visible');
+                 });
+            }, { threshold: 0.1 });
+            headerObserver.observe(heroSection);
+
+            // ÜST ÜSTE GÖRÜNME OLAYI (APPLE)
+            function handlePanelScroll(containerSelector, panelSelector, stickyWrapperSelector) {
+                const container = document.querySelector(containerSelector);
+                if (!container) return;
+                const stickyWrapper = container.querySelector(stickyWrapperSelector);
+                const panels = container.querySelectorAll(panelSelector);
+                const numPanels = panels.length;
+
+                window.addEventListener('scroll', () => {
+                    const scrollY = window.scrollY;
+                    const containerTop = container.offsetTop;
+                    const containerHeight = container.offsetHeight;
+                    const stickyHeight = stickyWrapper.offsetHeight;
+
+                    if (scrollY >= containerTop && scrollY <= containerTop + containerHeight - stickyHeight) {
+                        const scrollProgress = (scrollY - containerTop) / (containerHeight - stickyHeight);
+                        const activePanelIndex = Math.min(numPanels - 1, Math.floor(scrollProgress * numPanels));
+                        
+                        panels.forEach((panel, index) => {
+                            if (index === activePanelIndex) {
+                                panel.classList.add('active');
+                                if (panel.dataset.color) {
+                                    document.body.style.backgroundColor = panel.dataset.color;
+                                }
+                            } else {
+                                panel.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            }
+
+            handlePanelScroll('#features', '.feature-panel', '.feature-sticky-wrapper');
+            handlePanelScroll('#collection', '.collection-panel', '.collection-sticky-wrapper');
+
+
+            // ARKAPLAN
+            const collectionSection = document.getElementById('collection');
+            const contactSection = document.getElementById('contact');
+
+            window.addEventListener('scroll', () => {
+                 const scrollY = window.scrollY;
+                 if (scrollY < collectionSection.offsetTop - window.innerHeight/2) {
+                 } else if (scrollY >= contactSection.offsetTop - window.innerHeight) {
+                     document.body.style.backgroundColor = 'var(--background-light)';
+                 } else if (scrollY > collectionSection.offsetTop) {
+                    document.body.style.backgroundColor = 'var(--background-dark)';
+                 }
+            });
+
+            // İLETİŞİMİN AÇILMASI
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const contactModal = document.getElementById('contact-modal');
+            const contactSectionElement = document.getElementById('contact');
+
+            openModalBtn.addEventListener('click', () => {
+                document.body.classList.add('modal-open');
+                contactModal.classList.add('active');
+                contactSectionElement.classList.add('modal-is-open');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                document.body.classList.remove('modal-open');
+                contactModal.classList.remove('active');
+                contactSectionElement.classList.remove('modal-is-open');
+            });
+
+            // OKA TIKLAMA
+            const scrollDownIndicator = document.querySelector('.scroll-down-indicator');
+            if (scrollDownIndicator) {
+                scrollDownIndicator.addEventListener('click', () => {
+                    const featuresSection = document.getElementById('features');
+                    if (featuresSection) {
+                        featuresSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
